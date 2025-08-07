@@ -10,11 +10,11 @@ use StitchWizard\Contracts\WizardStateStore;
 
 class WizardController extends Controller
 {
-    protected $stateStore;
+    protected WizardStateStore $stateStore;
 
-    protected $validator;
+    protected JsonSchemaValidator $validator;
 
-    protected $visibilityEngine;
+    protected VisibilityEngine $visibilityEngine;
 
     public function __construct(
         WizardStateStore $stateStore,
@@ -26,7 +26,7 @@ class WizardController extends Controller
         $this->visibilityEngine = $visibilityEngine;
     }
 
-    public function show(string $id)
+    public function show(string $id): mixed
     {
         $wizard = $this->loadWizard($id);
         if (! $wizard) {
@@ -58,7 +58,7 @@ class WizardController extends Controller
     /**
      * Display a specific step (deep-link).
      */
-    public function showStep(string $id, string $key)
+    public function showStep(string $id, string $key): mixed
     {
         $wizard = $this->loadWizard($id);
         if (! $wizard) {
@@ -88,7 +88,7 @@ class WizardController extends Controller
         ]);
     }
 
-    public function postStep(string $id, string $key, Request $request)
+    public function postStep(string $id, string $key, Request $request): mixed
     {
         $wizard = $this->loadWizard($id);
         if (! $wizard) {
@@ -174,7 +174,7 @@ class WizardController extends Controller
         return redirect()->route('stitch-wizard.finalize', ['id' => $id]);
     }
 
-    public function finalize(string $id, Request $request)
+    public function finalize(string $id, Request $request): mixed
     {
         $this->stateStore->clear($id);
 
@@ -187,12 +187,12 @@ class WizardController extends Controller
         ]);
     }
 
-    private function loadWizard(string $id)
+    private function loadWizard(string $id): ?array
     {
         return config("stitch-wizard.wizards.{$id}");
     }
 
-    private function findStep(array $wizard, string $key)
+    private function findStep(array $wizard, string $key): ?array
     {
         foreach ($wizard['steps'] as $step) {
             if ($step['key'] === $key) {
@@ -203,7 +203,7 @@ class WizardController extends Controller
         return null;
     }
 
-    private function nextStepKey(array $wizard, string $currentKey)
+    private function nextStepKey(array $wizard, string $currentKey): ?string
     {
         $steps = $wizard['steps'];
         $currentIndex = -1;
@@ -222,7 +222,7 @@ class WizardController extends Controller
         return null;
     }
 
-    private function visibleFields(array $fields, array $context)
+    private function visibleFields(array $fields, array $context): array
     {
         return array_filter($fields, function ($field) use ($context) {
             if (! isset($field['visibility'])) {

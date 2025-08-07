@@ -4,6 +4,9 @@ namespace StitchWizard\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property array|null $state Persisted wizard field values (JSON-cast).
+ */
 class WizardState extends Model
 {
     /**

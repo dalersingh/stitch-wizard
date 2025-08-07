@@ -43,7 +43,8 @@ class SimpleVisibilityEngine implements VisibilityEngine
                 case 'truthy':
                     return (bool) $actual === true;
                 case 'falsy':
-                    return (bool) $actual === false || $actual === null;
+                    // Consider any value that evaluates to boolean false as “falsy”.
+                    return ! (bool) $actual;
                 default:
                     return true;
             }
