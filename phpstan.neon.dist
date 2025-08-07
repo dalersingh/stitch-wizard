@@ -1,0 +1,10 @@
+parameters:
+    level: 6
+    paths:
+        - src
+    tmpDir: .phpstan/cache
+    checkMissingIterableValueType: false
+    ignoreErrors: []
+
+includes:
+    - vendor/nunomaduro/larastan/extension.neon
