@@ -45,8 +45,44 @@ class WizardController extends Controller
         return view('stitch-wizard::wizard.step', [
             'wizardId' => $id,
             'stepKey' => $stepKey,
+            'prevStepKey' => null,
+            'stepIndex' => 1,
+            'totalSteps' => count($wizard['steps']),
             'wizard' => $wizard,
             'step' => $firstStep,
+            'fields' => $visibleFields,
+            'values' => $currentState,
+        ]);
+    }
+
+    /**
+     * Display a specific step (deep-link).
+     */
+    public function showStep(string $id, string $key)
+    {
+        $wizard = $this->loadWizard($id);
+        if (! $wizard) {
+            abort(404);
+        }
+
+        $step = $this->findStep($wizard, $key);
+        if (! $step) {
+            abort(404);
+        }
+
+        $currentState = $this->stateStore->get($id);
+        $visibleFields = $this->visibleFields($step['fields'], $currentState);
+
+        $stepIndex = array_search($key, array_column($wizard['steps'], 'key'), true) + 1;
+
+        return view('stitch-wizard::wizard.step', [
+            'wizardId' => $id,
+            'stepKey' => $key,
+            'prevStepKey' => $this->previousStepKey($wizard, $key),
+            'stepIndex' => $stepIndex,
+            'totalSteps' => count($wizard['steps']),
+            'wizard' => $wizard,
+            'step' => $step,
             'fields' => $visibleFields,
             'values' => $currentState,
         ]);
@@ -82,6 +118,9 @@ class WizardController extends Controller
             return view('stitch-wizard::wizard.step', [
                 'wizardId' => $id,
                 'stepKey' => $key,
+                'prevStepKey' => $this->previousStepKey($wizard, $key),
+                'stepIndex' => array_search($key, array_column($wizard['steps'], 'key'), true) + 1,
+                'totalSteps' => count($wizard['steps']),
                 'wizard' => $wizard,
                 'step' => $step,
                 'fields' => $visibleFields,
@@ -103,6 +142,9 @@ class WizardController extends Controller
                 return view('stitch-wizard::wizard.step', [
                     'wizardId' => $id,
                     'stepKey' => $nextStepKey,
+                    'prevStepKey' => $this->previousStepKey($wizard, $nextStepKey),
+                    'stepIndex' => array_search($nextStepKey, array_column($wizard['steps'], 'key'), true) + 1,
+                    'totalSteps' => count($wizard['steps']),
                     'wizard' => $wizard,
                     'step' => $nextStep,
                     'fields' => $nextVisible,
@@ -119,6 +161,9 @@ class WizardController extends Controller
             return view('stitch-wizard::wizard.step', [
                 'wizardId' => $id,
                 'stepKey' => $nextStepKey,
+                'prevStepKey' => $this->previousStepKey($wizard, $nextStepKey),
+                'stepIndex' => array_search($nextStepKey, array_column($wizard['steps'], 'key'), true) + 1,
+                'totalSteps' => count($wizard['steps']),
                 'wizard' => $wizard,
                 'step' => $nextStep,
                 'fields' => $nextVisible,
@@ -186,5 +231,17 @@ class WizardController extends Controller
 
             return $this->visibilityEngine->evaluate($context, $field['visibility']);
         });
+    }
+
+    private function previousStepKey(array $wizard, string $currentKey): ?string
+    {
+        $steps = $wizard['steps'];
+        foreach ($steps as $index => $step) {
+            if ($step['key'] === $currentKey && $index > 0) {
+                return $steps[$index - 1]['key'];
+            }
+        }
+
+        return null;
     }
 }

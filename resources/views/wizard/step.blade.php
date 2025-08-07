@@ -3,10 +3,17 @@
         {{ $step['title'] ?? $stepKey }}
     </h1>
 
+    @if (isset($stepIndex, $totalSteps))
+        <p class="text-sm text-gray-500 mb-2">
+            Step {{ $stepIndex }} of {{ $totalSteps }}
+        </p>
+    @endif
+
     <form
         method="POST"
         action="{{ route('stitch-wizard.step', ['id' => $wizardId, 'key' => $stepKey]) }}"
         class="space-y-6"
+        enctype="multipart/form-data"
     >
         @csrf
 
@@ -64,7 +71,7 @@
 
     <div class="mt-4">
         <a
-            href="{{ route('stitch-wizard.show', ['id' => $wizardId]) }}"
+            href="{{ isset($prevStepKey) ? route('stitch-wizard.step.show', ['id' => $wizardId, 'key' => $prevStepKey]) : route('stitch-wizard.show', ['id' => $wizardId]) }}"
             class="text-blue-600 hover:underline text-sm"
         >
             &larr; Back

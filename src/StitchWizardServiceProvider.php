@@ -19,8 +19,15 @@ class StitchWizardServiceProvider extends ServiceProvider
             'stitch-wizard'
         );
 
+        // Bind the state-store implementation defined in the package config (defaults
+        // to the in-memory Session store) unless the application has provided its own.
         if (! $this->app->bound(WizardStateStore::class)) {
-            $this->app->bind(WizardStateStore::class, SessionWizardStateStore::class);
+            $storeClass = config(
+                'stitch-wizard.state_store',
+                SessionWizardStateStore::class
+            );
+
+            $this->app->bind(WizardStateStore::class, $storeClass);
         }
 
         if (! $this->app->bound(JsonSchemaValidator::class)) {
@@ -45,5 +52,8 @@ class StitchWizardServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/vendor/stitch-wizard'),
         ], 'stitch-wizard-views');
+
+        // Package migrations (e.g., for the forthcoming database-backed state store)
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }
 }
