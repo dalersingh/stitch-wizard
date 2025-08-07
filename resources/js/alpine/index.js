@@ -14,6 +14,11 @@ function initWizard(root) {
       root.addEventListener('ajax:before', () => { this.isBusy = true; });
       root.addEventListener('ajax:success', (event) => {
         this.isBusy = false;
+        if (event.detail && event.detail.redirect) {
+          // Server instructs a full-page redirect – immediately stop further processing
+          window.location.href = event.detail.redirect;
+          return;
+        }
         if (event.detail && event.detail.stepKey) { this.stepKey = event.detail.stepKey; }
         this.errors = {};
       });
