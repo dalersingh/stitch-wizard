@@ -3,6 +3,7 @@
 namespace StitchWizard\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Routing\Controller;
 use StitchWizard\Contracts\JsonSchemaValidator;
 use StitchWizard\Contracts\VisibilityEngine;
@@ -127,6 +128,17 @@ class WizardController extends Controller
                 'values' => $context,
                 'errors' => $errors,
             ]);
+        }
+
+        // Persist uploaded files and replace UploadedFile instances with stored paths.
+        foreach ($visibleFields as $field) {
+            if (($field['type'] ?? null) === 'file') {
+                $key = $field['key'];
+                if (isset($filteredInput[$key]) && $filteredInput[$key] instanceof UploadedFile) {
+                    $filteredInput[$key] = $filteredInput[$key]
+                        ->store('stitch-wizard', config('filesystems.default', 'local'));
+                }
+            }
         }
 
         $updatedState = array_merge($currentState, $filteredInput);
