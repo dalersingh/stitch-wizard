@@ -2,8 +2,8 @@
 
 namespace StitchWizard\Stores;
 
-use StitchWizard\Contracts\WizardStateStore;
 use Illuminate\Contracts\Session\Session;
+use StitchWizard\Contracts\WizardStateStore;
 
 class SessionWizardStateStore implements WizardStateStore
 {

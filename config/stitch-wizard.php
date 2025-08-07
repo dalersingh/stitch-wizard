@@ -23,15 +23,15 @@ return [
                     'title' => 'Basic',
                     'fields' => [
                         [
-                            'key'   => 'full_name',
+                            'key' => 'full_name',
                             'label' => 'Full name',
-                            'type'  => 'text',
+                            'type' => 'text',
                             'rules' => ['required', 'string', 'min:2'],
                         ],
                         [
-                            'key'   => 'email',
+                            'key' => 'email',
                             'label' => 'Email',
-                            'type'  => 'text',
+                            'type' => 'text',
                             'rules' => ['required', 'email'],
                         ],
                     ],
@@ -41,9 +41,9 @@ return [
                     'title' => 'Employment',
                     'fields' => [
                         [
-                            'key'   => 'status',
+                            'key' => 'status',
                             'label' => 'Employment status',
-                            'type'  => 'select',
+                            'type' => 'select',
                             'options' => [
                                 ['value' => 'employed',   'label' => 'Employed'],
                                 ['value' => 'self',       'label' => 'Self-employed'],
@@ -52,16 +52,16 @@ return [
                             'rules' => ['required', 'in:employed,self,unemployed'],
                         ],
                         [
-                            'key'   => 'income',
+                            'key' => 'income',
                             'label' => 'Annual income',
-                            'type'  => 'number',
+                            'type' => 'number',
                             'rules' => ['required', 'numeric', 'min:0'],
                             'visibility' => [
                                 'logic' => 'all',
                                 'rules' => [
                                     [
-                                        'path'  => 'status',
-                                        'op'    => 'in',
+                                        'path' => 'status',
+                                        'op' => 'in',
                                         'value' => ['employed', 'self'],
                                     ],
                                 ],

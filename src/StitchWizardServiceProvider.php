@@ -3,9 +3,9 @@
 namespace StitchWizard;
 
 use Illuminate\Support\ServiceProvider;
-use StitchWizard\Contracts\WizardStateStore;
 use StitchWizard\Contracts\JsonSchemaValidator;
 use StitchWizard\Contracts\VisibilityEngine;
+use StitchWizard\Contracts\WizardStateStore;
 use StitchWizard\Stores\SessionWizardStateStore;
 use StitchWizard\Validation\BasicJsonSchemaValidator;
 use StitchWizard\Visibility\SimpleVisibilityEngine;

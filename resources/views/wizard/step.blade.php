@@ -10,7 +10,7 @@
     >
         @csrf
 
-        @foreach ($step['fields'] as $field)
+        @foreach (($fields ?? $step['fields']) as $field)
             @php
                 $key   = $field['key'];
                 $type  = $field['type'] ?? 'text';

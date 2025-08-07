@@ -15,8 +15,8 @@ class SimpleVisibilityEngine implements VisibilityEngine
         $logic = strtolower($rules['logic'] ?? 'all') === 'any' ? 'any' : 'all';
 
         $results = array_map(function (array $rule) use ($context) {
-            $path  = $rule['path']  ?? null;
-            $op    = $rule['op']    ?? '=';
+            $path = $rule['path'] ?? null;
+            $op = $rule['op'] ?? '=';
             $value = $rule['value'] ?? null;
 
             $actual = data_get($context, $path);

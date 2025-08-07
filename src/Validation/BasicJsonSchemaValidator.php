@@ -2,8 +2,8 @@
 
 namespace StitchWizard\Validation;
 
-use StitchWizard\Contracts\JsonSchemaValidator;
 use Illuminate\Support\Facades\Validator;
+use StitchWizard\Contracts\JsonSchemaValidator;
 
 class BasicJsonSchemaValidator implements JsonSchemaValidator
 {

@@ -1,7 +1,4 @@
 {
   "preset": "laravel",
-  "rules": {
-    "@Laravel": true
-  },
-  "riskier": true
+  "rules": {}
 }

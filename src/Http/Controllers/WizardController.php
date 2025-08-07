@@ -11,7 +11,9 @@ use StitchWizard\Contracts\WizardStateStore;
 class WizardController extends Controller
 {
     protected $stateStore;
+
     protected $validator;
+
     protected $visibilityEngine;
 
     public function __construct(
@@ -27,114 +29,124 @@ class WizardController extends Controller
     public function show(string $id)
     {
         $wizard = $this->loadWizard($id);
-        if (!$wizard) {
+        if (! $wizard) {
             abort(404);
         }
 
         $firstStep = $wizard['steps'][0] ?? null;
-        if (!$firstStep) {
+        if (! $firstStep) {
             abort(404);
         }
 
         $stepKey = $firstStep['key'];
-        
+        $currentState = $this->stateStore->get($id);
+        $visibleFields = $this->visibleFields($firstStep['fields'], $currentState);
+
         return view('stitch-wizard::wizard.step', [
             'wizardId' => $id,
             'stepKey' => $stepKey,
             'wizard' => $wizard,
             'step' => $firstStep,
-            'values' => $this->stateStore->get($id),
+            'fields' => $visibleFields,
+            'values' => $currentState,
         ]);
     }
 
     public function postStep(string $id, string $key, Request $request)
     {
         $wizard = $this->loadWizard($id);
-        if (!$wizard) {
+        if (! $wizard) {
             abort(404);
         }
 
         $step = $this->findStep($wizard, $key);
-        if (!$step) {
+        if (! $step) {
             abort(404);
         }
 
         $currentState = $this->stateStore->get($id);
         $inputData = $request->all();
         $context = array_merge($currentState, $inputData);
-        
+
         $visibleFields = $this->visibleFields($step['fields'], $context);
         $fieldKeys = array_column($visibleFields, 'key');
         $filteredInput = array_intersect_key($inputData, array_flip($fieldKeys));
-        
+
         $errors = $this->validator->validate($filteredInput, $visibleFields);
-        
-        if (!empty($errors)) {
+
+        if (! empty($errors)) {
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json(['errors' => $errors], 422);
             }
-            
+
             return view('stitch-wizard::wizard.step', [
                 'wizardId' => $id,
                 'stepKey' => $key,
                 'wizard' => $wizard,
                 'step' => $step,
+                'fields' => $visibleFields,
                 'values' => $context,
                 'errors' => $errors,
             ]);
         }
-        
+
         $updatedState = array_merge($currentState, $filteredInput);
         $this->stateStore->put($id, $updatedState);
-        
+
         $nextStepKey = $this->nextStepKey($wizard, $key);
         $nextStep = $nextStepKey ? $this->findStep($wizard, $nextStepKey) : null;
-        
+
         if ($request->expectsJson() || $request->ajax()) {
             if ($nextStep) {
+                $nextVisible = $this->visibleFields($nextStep['fields'], $updatedState);
+
                 return view('stitch-wizard::wizard.step', [
                     'wizardId' => $id,
                     'stepKey' => $nextStepKey,
                     'wizard' => $wizard,
                     'step' => $nextStep,
+                    'fields' => $nextVisible,
                     'values' => $updatedState,
                 ])->render();
             }
-            
+
             return response()->json(['redirect' => route('stitch-wizard.finalize', ['id' => $id])]);
         }
-        
+
         if ($nextStep) {
+            $nextVisible = $this->visibleFields($nextStep['fields'], $updatedState);
+
             return view('stitch-wizard::wizard.step', [
                 'wizardId' => $id,
                 'stepKey' => $nextStepKey,
                 'wizard' => $wizard,
                 'step' => $nextStep,
+                'fields' => $nextVisible,
                 'values' => $updatedState,
             ]);
         }
-        
+
         return redirect()->route('stitch-wizard.finalize', ['id' => $id]);
     }
 
     public function finalize(string $id, Request $request)
     {
         $this->stateStore->clear($id);
-        
+
         if ($request->expectsJson() || $request->ajax()) {
             return response('<div class="wizard-success">Wizard completed successfully!</div>');
         }
-        
+
         return view('stitch-wizard::wizard.success', [
             'wizardId' => $id,
         ]);
     }
-    
+
     private function loadWizard(string $id)
     {
         return config("stitch-wizard.wizards.{$id}");
     }
-    
+
     private function findStep(array $wizard, string $key)
     {
         foreach ($wizard['steps'] as $step) {
@@ -142,36 +154,36 @@ class WizardController extends Controller
                 return $step;
             }
         }
-        
+
         return null;
     }
-    
+
     private function nextStepKey(array $wizard, string $currentKey)
     {
         $steps = $wizard['steps'];
         $currentIndex = -1;
-        
+
         foreach ($steps as $index => $step) {
             if ($step['key'] === $currentKey) {
                 $currentIndex = $index;
                 break;
             }
         }
-        
+
         if ($currentIndex >= 0 && isset($steps[$currentIndex + 1])) {
             return $steps[$currentIndex + 1]['key'];
         }
-        
+
         return null;
     }
-    
+
     private function visibleFields(array $fields, array $context)
     {
         return array_filter($fields, function ($field) use ($context) {
-            if (!isset($field['visibility'])) {
+            if (! isset($field['visibility'])) {
                 return true;
             }
-            
+
             return $this->visibilityEngine->evaluate($context, $field['visibility']);
         });
     }
