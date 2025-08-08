@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('real estate wizard completes successfully', async ({ page }, testInfo) => {
   await page.goto('/wizard/real-estate');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Real Estate Listing/i);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Basic Information/i);
   
   // Step 1: Basics
   await page.locator('input[name="listing_type"][value="sell"]').click();
