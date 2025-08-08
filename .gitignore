@@ -1,0 +1,32 @@
+# Composer dependencies
+/vendor/
+composer.lock
+
+# Node dependencies
+/node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# PHPUnit
+/.phpunit.cache/
+/.phpunit.result.cache
+/coverage/
+
+# PHPStan
+/.phpstan/
+/.phpstan.cache
+
+# IDE and editor files
+/.idea/
+/.vscode/
+.DS_Store
+
+# Laravel
+/storage/
+
+# Docker
+/docker-data/
+
+# Testing
+/Playwright/
