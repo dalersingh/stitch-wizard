@@ -314,7 +314,7 @@ return [
                             'key' => 'year_built',
                             'label' => 'Year Built',
                             'type' => 'number',
-                            'rules' => ['min:1800', 'max:2100'],
+                            'rules' => ['nullable', 'integer', 'min:1800', 'max:2100'],
                         ],
                         [
                             'key' => 'facing',
