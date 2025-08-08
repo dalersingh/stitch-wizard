@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+  php:
+    build:
+      context: .
+    volumes:
+      - .:/app
+      - composer-cache:/root/.composer/cache
+    working_dir: /app
+    environment:
+      COMPOSER_ALLOW_SUPERUSER: 1
+    tty: true
+    restart: unless-stopped
+
+volumes:
+  composer-cache:
+    name: stitch-wizard-composer-cache
