@@ -129,8 +129,6 @@ class WizardController extends Controller
 
         foreach ($visibleFields as $field) {
             if (($field['type'] ?? null) === 'file') {
-                $key = $field['key'];
-                if (isset($filteredInput[$key]) && $filteredInput[$key] instanceof UploadedFile) {
                 $fieldKey = $field['key'];
                 if (isset($filteredInput[$fieldKey]) && $filteredInput[$fieldKey] instanceof UploadedFile) {
                     $filteredInput[$fieldKey] = $filteredInput[$fieldKey]
@@ -189,7 +187,9 @@ class WizardController extends Controller
         $this->stateStore->clear($id);
 
         if ($request->expectsJson() || $request->ajax()) {
-            return response('<div class="wizard-success">Wizard completed successfully!</div>');
+            return response(
+                view('stitch-wizard::wizard.success', ['wizardId' => $id])->render()
+            );
         }
 
         return view('stitch-wizard::wizard.success', [
