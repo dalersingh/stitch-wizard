@@ -23,7 +23,9 @@
                 $type  = $field['type'] ?? 'text';
                 $label = $field['label'] ?? ucfirst(str_replace('_', ' ', $key));
                 $value = old($key, $values[$key] ?? '');
-                $fieldErrors = $errors[$key] ?? [];
+                $fieldErrorsForKey = (isset($fieldErrors) && is_array($fieldErrors))
+                    ? ($fieldErrors[$key] ?? [])
+                    : (isset($errors) ? $errors->get($key) : []);
             @endphp
 
             <div class="flex flex-col gap-1">
@@ -33,7 +35,7 @@
                     <select
                         id="{{ $key }}"
                         name="{{ $key }}"
-                        class="border rounded px-3 py-2 @if($fieldErrors) border-red-500 @endif"
+                        class="border rounded px-3 py-2 @if(!empty($fieldErrorsForKey)) border-red-500 @endif"
                     >
                         <option value="">-- Select --</option>
                         @foreach ($field['options'] ?? [] as $opt)
@@ -51,12 +53,12 @@
                         name="{{ $key }}"
                         type="{{ $type }}"
                         value="{{ $value }}"
-                        class="border rounded px-3 py-2 w-full @if($fieldErrors) border-red-500 @endif"
+                        class="border rounded px-3 py-2 w-full @if(!empty($fieldErrorsForKey)) border-red-500 @endif"
                     />
                 @endif
 
-                @if($fieldErrors)
-                    <p class="text-sm text-red-600">{{ $fieldErrors[0] }}</p>
+                @if(!empty($fieldErrorsForKey))
+                    <p class="text-sm text-red-600">{{ $fieldErrorsForKey[0] }}</p>
                 @endif
             </div>
         @endforeach

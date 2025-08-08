@@ -56,9 +56,6 @@ class WizardController extends Controller
         ]);
     }
 
-    /**
-     * Display a specific step (deep-link).
-     */
     public function showStep(string $id, string $key): mixed
     {
         $wizard = $this->loadWizard($id);
@@ -126,11 +123,10 @@ class WizardController extends Controller
                 'step' => $step,
                 'fields' => $visibleFields,
                 'values' => $context,
-                'errors' => $errors,
+                'fieldErrors' => $errors,
             ]);
         }
 
-        // Persist uploaded files and replace UploadedFile instances with stored paths.
         foreach ($visibleFields as $field) {
             if (($field['type'] ?? null) === 'file') {
                 $key = $field['key'];
