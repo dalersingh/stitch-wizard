@@ -13,7 +13,7 @@ test('real estate wizard completes successfully', async ({ page }, testInfo) => 
   await page.selectOption('select[name="property_type"]', 'condo');
   await page.getByLabel('Title').fill('Luxury Condo in Bangkok');
   await page.getByLabel('Description').fill('A beautiful luxury condominium in the heart of Bangkok with amazing city views. Perfect for professionals.');
-  await page.getByLabel('Price').fill('5000000');
+  await page.locator('input[name="price"]').fill('5000000');
   await page.selectOption('select[name="currency"]', 'THB');
   
   await page.waitForTimeout(200);
