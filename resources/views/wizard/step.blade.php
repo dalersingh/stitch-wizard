@@ -1,11 +1,16 @@
 <script src="https://cdn.tailwindcss.com"></script>
-<div class="wizard-step-container max-w-xl mx-auto">
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-white p-4">
+<div class="wizard-step-container w-full max-w-xl bg-white rounded-xl shadow-lg p-8">
     <h1 class="text-xl font-bold mb-6">
         {{ $step['title'] ?? $stepKey }}
     </h1>
 
     @if (isset($stepIndex, $totalSteps))
-        <p class="text-sm text-gray-500 mb-2">
+        @php $pct = intval(($stepIndex / max($totalSteps,1))*100); @endphp
+        <div class="w-full h-2 bg-slate-200 rounded mb-4 overflow-hidden">
+            <div class="h-full bg-indigo-500 transition-all" style="width: {{ $pct }}%"></div>
+        </div>
+        <p class="text-sm text-gray-500 mb-4">
             Step {{ $stepIndex }} of {{ $totalSteps }}
         </p>
     @endif
@@ -36,7 +41,7 @@
                     <select
                         id="{{ $key }}"
                         name="{{ $key }}"
-                        class="border rounded px-3 py-2 @if(!empty($fieldErrorsForKey)) border-red-500 @endif"
+                        class="border rounded-lg px-3 py-2 w-full border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 @if(!empty($fieldErrorsForKey)) border-red-500 @endif"
                     >
                         <option value="">-- Select --</option>
                         @foreach ($field['options'] ?? [] as $opt)
@@ -53,7 +58,7 @@
                         id="{{ $key }}"
                         name="{{ $key }}[]"
                         multiple
-                        class="border rounded px-3 py-2 @if(!empty($fieldErrorsForKey)) border-red-500 @endif"
+                        class="border rounded-lg px-3 py-2 w-full border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 @if(!empty($fieldErrorsForKey)) border-red-500 @endif"
                     >
                         @foreach ($field['options'] ?? [] as $opt)
                             <option
@@ -69,7 +74,7 @@
                         id="{{ $key }}"
                         name="{{ $key }}"
                         rows="4"
-                        class="border rounded px-3 py-2 w-full @if(!empty($fieldErrorsForKey)) border-red-500 @endif"
+                        class="border rounded-lg px-3 py-2 w-full border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 @if(!empty($fieldErrorsForKey)) border-red-500 @endif"
                     >{{ $value }}</textarea>
                 @elseif ($type === 'checkbox' || $type === 'toggle')
                     <input
@@ -78,7 +83,7 @@
                         type="checkbox"
                         value="1"
                         @checked($value)
-                        class="@if($type==='toggle') peer sr-only @else border rounded @endif @if(!empty($fieldErrorsForKey)) border-red-500 @endif"
+                        class="@if($type==='toggle') peer sr-only @else border rounded-lg @endif @if(!empty($fieldErrorsForKey)) border-red-500 @endif"
                     />
                     @if($type==='toggle')
                         <label for="{{ $key }}" class="inline-flex items-center cursor-pointer">
@@ -96,7 +101,7 @@
                                     name="{{ $key }}"
                                     value="{{ $opt['value'] }}"
                                     @checked($value == $opt['value'])
-                                    class="border rounded @if(!empty($fieldErrorsForKey)) border-red-500 @endif"
+                                    class="border rounded-lg @if(!empty($fieldErrorsForKey)) border-red-500 @endif"
                                 >
                                 <span>{{ $opt['label'] }}</span>
                             </label>
@@ -108,7 +113,7 @@
                         name="{{ $key }}"
                         type="{{ $type }}"
                         value="{{ $value }}"
-                        class="border rounded px-3 py-2 w-full @if(!empty($fieldErrorsForKey)) border-red-500 @endif"
+                        class="border rounded-lg px-3 py-2 w-full border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 @if(!empty($fieldErrorsForKey)) border-red-500 @endif"
                     />
                 @else
                     <input
@@ -116,7 +121,7 @@
                         name="{{ $key }}"
                         type="{{ $type }}"
                         value="{{ $value }}"
-                        class="border rounded px-3 py-2 w-full @if(!empty($fieldErrorsForKey)) border-red-500 @endif"
+                        class="border rounded-lg px-3 py-2 w-full border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 @if(!empty($fieldErrorsForKey)) border-red-500 @endif"
                     />
                 @endif
 
@@ -128,18 +133,19 @@
 
         <button
             type="submit"
-            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition"
         >
             Continue
         </button>
     </form>
 
-    <div class="mt-4">
+    <div class="mt-4 text-center">
         <a
             href="{{ isset($prevStepKey) ? route('stitch-wizard.step.show', ['id' => $wizardId, 'key' => $prevStepKey]) : route('stitch-wizard.show', ['id' => $wizardId]) }}"
-            class="text-blue-600 hover:underline text-sm"
+            class="text-slate-500 hover:text-slate-700 text-sm"
         >
             &larr; Back
         </a>
     </div>
+</div>
 </div>
