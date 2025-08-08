@@ -57,7 +57,7 @@ test('real estate wizard completes successfully', async ({ page }, testInfo) => 
   await page.selectOption('select[name="facilities[]"]', ['pool', 'gym']);
   
   // Toggle pet friendly
-  await page.locator('label[for="pet_friendly"]').click();
+  await page.locator('label.inline-flex[for="pet_friendly"]').click();
   
   await page.waitForTimeout(200);
   await page.screenshot({ path: testInfo.outputPath('step4.png') });
