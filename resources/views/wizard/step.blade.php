@@ -6,7 +6,6 @@
     </h1>
 
     @if (isset($stepIndex, $totalSteps))
-        @php $pct = intval(($stepIndex / max($totalSteps,1))*100); @endphp
         <div class="w-full h-2 bg-slate-200 rounded mb-4 overflow-hidden">
             <div class="h-full bg-indigo-500 transition-all" style="width: {{ $pct }}%"></div>
         </div>
