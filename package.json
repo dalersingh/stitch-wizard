@@ -7,6 +7,9 @@
   "scripts": {
     "e2e": "playwright test",
     "e2e:headed": "playwright test --headed",
-    "e2e:report": "playwright show-report e2e/playwright-report"
+    "e2e:report": "playwright show-report playwright-report",
+    "install:browsers": "playwright install --with-deps",
+    "prepare": "npm run install:browsers",
+    "setup": "npm install && npm run prepare"
   }
 }
