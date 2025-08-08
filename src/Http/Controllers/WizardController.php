@@ -131,7 +131,9 @@ class WizardController extends Controller
             if (($field['type'] ?? null) === 'file') {
                 $key = $field['key'];
                 if (isset($filteredInput[$key]) && $filteredInput[$key] instanceof UploadedFile) {
-                    $filteredInput[$key] = $filteredInput[$key]
+                $fieldKey = $field['key'];
+                if (isset($filteredInput[$fieldKey]) && $filteredInput[$fieldKey] instanceof UploadedFile) {
+                    $filteredInput[$fieldKey] = $filteredInput[$fieldKey]
                         ->store('stitch-wizard', config('filesystems.default', 'local'));
                 }
             }
