@@ -33,6 +33,18 @@ test('real estate wizard completes successfully', async ({ page }, testInfo) => 
   // Step 3: Property Details
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Property Details/i);
   await page.getByLabel('Usable Area (sqm)').fill('85');
+  await page.getByLabel('Bedrooms').fill('2');
+  await page.getByLabel('Bathrooms').fill('1');
+  await page.getByLabel('Floor').fill('10');
+  await page.getByLabel('Total Floors').fill('30');
+  await page.getByLabel('Land Size (Rai)').fill('0');
+  await page.getByLabel('Land Size (Ngan)').fill('0');
+  await page.getByLabel('Land Size (Wah)').fill('0');
+  await page.selectOption('select[name="furnishing"]', 'none');
+  await page.selectOption('select[name="ownership"]', 'freehold');
+  await page.selectOption('select[name="title_deed"]', 'chanote');
+  await page.getByLabel('Year Built').fill('2010');
+  await page.selectOption('select[name="facing"]', 'north');
   
   await page.waitForTimeout(200);
   await page.screenshot({ path: testInfo.outputPath('step3.png') });
