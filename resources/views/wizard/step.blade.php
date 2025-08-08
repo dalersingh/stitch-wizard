@@ -47,7 +47,7 @@
                         @foreach ($field['options'] ?? [] as $opt)
                             <option
                                 value="{{ $opt['value'] }}"
-                                @selected($value == $opt['value'])
+                                @selected($value === $opt['value'])
                             >
                                 {{ $opt['label'] }}
                             </option>
