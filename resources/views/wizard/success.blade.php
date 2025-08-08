@@ -1,3 +1,4 @@
+<script src="https://cdn.tailwindcss.com"></script>
 <div class="wizard-success-container max-w-xl mx-auto">
     <h1 class="text-xl font-bold mb-6">Wizard Completed</h1>
     
