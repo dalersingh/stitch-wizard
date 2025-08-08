@@ -100,7 +100,7 @@
                                     type="radio"
                                     name="{{ $key }}"
                                     value="{{ $opt['value'] }}"
-                                    @checked($value == $opt['value'])
+                                    @checked($value === $opt['value'])
                                     class="border rounded-lg @if(!empty($fieldErrorsForKey)) border-red-500 @endif"
                                 >
                                 <span>{{ $opt['label'] }}</span>
