@@ -25,7 +25,7 @@ class SimpleVisibilityEngine implements VisibilityEngine
                 case '=':
                     return $actual == $value;
                 case '!=':
-                    return $actual != $value;
+                    return $actual !== $value;
                 case '>':
                     return $actual > $value;
                 case '>=':
