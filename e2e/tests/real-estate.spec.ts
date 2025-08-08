@@ -35,8 +35,8 @@ test('real estate wizard completes successfully', async ({ page }, testInfo) => 
   await page.getByLabel('Usable Area (sqm)').fill('85');
   await page.getByLabel('Bedrooms').fill('2');
   await page.getByLabel('Bathrooms').fill('1');
-  await page.getByLabel('Floor').fill('10');
-  await page.getByLabel('Total Floors').fill('30');
+  await page.locator('input[name="floor"]').fill('10');
+  await page.locator('input[name="total_floors"]').fill('30');
   await page.getByLabel('Land Size (Rai)').fill('0');
   await page.getByLabel('Land Size (Ngan)').fill('0');
   await page.getByLabel('Land Size (Wah)').fill('0');
