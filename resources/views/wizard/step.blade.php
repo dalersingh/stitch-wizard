@@ -1,7 +1,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-white p-4">
-<div class="wizard-step-container w-full max-w-xl bg-white rounded-xl shadow-lg p-8">
-    <h1 class="text-xl font-bold mb-6">
+<div data-wizard-root class="wizard-step-container w-full max-w-xl bg-white rounded-xl shadow-lg p-8">
+    <h1 class="text-xl font-bold mb-6" tabindex="-1">
         {{ $step['title'] ?? $stepKey }}
     </h1>
 
@@ -149,3 +149,44 @@
     </div>
 </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const hydrate = (html) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    return doc.querySelector('[data-wizard-root]');
+  };
+  const root = () => document.querySelector('[data-wizard-root]');
+  const toggleBusy = (on) => root().classList.toggle('opacity-50 pointer-events-none', on);
+  const swap = (newRoot, url, push = true) => {
+    root().replaceWith(newRoot);
+    if (push) history.pushState({}, '', url);
+    window.scrollTo({ top: 0 });
+    newRoot.querySelector('h1')?.focus();
+  };
+  const handle = (url, opts = null, push = true) => {
+    toggleBusy(true);
+    fetch(url, opts).then(r => r.text()).then(html => {
+      const fresh = hydrate(html);
+      if (fresh) swap(fresh, url, push);
+    }).finally(() => toggleBusy(false));
+  };
+  document.body.addEventListener('submit', e => {
+    const form = e.target.closest('form');
+    if (!form) return;
+    e.preventDefault();
+    const data = new FormData(form);
+    handle(form.action, { method: 'POST', body: data, headers: { 'X-Requested-With': 'fetch' } });
+  });
+  document.body.addEventListener('click', e => {
+    const a = e.target.closest('a[href]');
+    if (!a) return;
+    if (!a.href.includes('/wizard')) return;
+    if (a.target && a.target !== '_self') return;
+    e.preventDefault();
+    handle(a.href);
+  });
+  window.addEventListener('popstate', () => handle(location.href, null, false));
+});
+</script>
