@@ -23,7 +23,7 @@ test('real estate wizard completes successfully', async ({ page }, testInfo) => 
   // Step 2: Location
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Location/i);
   await page.getByLabel('Province').fill('Bangkok');
-  await page.getByLabel('District').fill('Sukhumvit');
+  await page.locator('input[name="district"]').fill('Sukhumvit');
   
   await page.waitForTimeout(200);
   await page.screenshot({ path: testInfo.outputPath('step2.png') });
