@@ -67,8 +67,11 @@ return [
                 [
                     'key' => 'basics',
                     'title' => 'Basic Information',
-                    'fields' => [
+                    'sections' => [
                         [
+                            'title' => 'Listing',
+                            'fields' => [
+                                [
                             'key' => 'listing_type',
                             'label' => 'Listing Type',
                             'type' => 'radio',
@@ -77,8 +80,8 @@ return [
                                 ['value' => 'rent', 'label' => 'Rent'],
                             ],
                             'rules' => ['required', 'in:sell,rent'],
-                        ],
-                        [
+                                ],
+                                [
                             'key' => 'property_type',
                             'label' => 'Property Type',
                             'type' => 'select',
@@ -90,26 +93,36 @@ return [
                                 ['value' => 'commercial', 'label' => 'Commercial'],
                             ],
                             'rules' => ['required', 'in:condo,house,townhouse,land,commercial'],
+                                ],
+                            ],
                         ],
                         [
+                            'title' => 'Content',
+                            'fields' => [
+                                [
                             'key' => 'project_name',
                             'label' => 'Project Name',
                             'type' => 'text',
                             'rules' => ['nullable'],
-                        ],
-                        [
+                                ],
+                                [
                             'key' => 'title',
                             'label' => 'Title',
                             'type' => 'text',
                             'rules' => ['required'],
-                        ],
-                        [
+                                ],
+                                [
                             'key' => 'description',
                             'label' => 'Description',
                             'type' => 'textarea',
                             'rules' => ['required', 'min:20'],
+                                ],
+                            ],
                         ],
                         [
+                            'title' => 'Financials',
+                            'fields' => [
+                                [
                             'key' => 'price',
                             'label' => 'Price',
                             'type' => 'number',
@@ -124,8 +137,8 @@ return [
                                     ],
                                 ],
                             ],
-                        ],
-                        [
+                                ],
+                                [
                             'key' => 'rent_price',
                             'label' => 'Rent Price',
                             'type' => 'number',
@@ -140,8 +153,8 @@ return [
                                     ],
                                 ],
                             ],
-                        ],
-                        [
+                                ],
+                                [
                             'key' => 'currency',
                             'label' => 'Currency',
                             'type' => 'select',
@@ -150,12 +163,14 @@ return [
                                 ['value' => 'USD', 'label' => 'US Dollar (USD)'],
                             ],
                             'rules' => ['required', 'in:THB,USD'],
-                        ],
-                        [
+                                ],
+                                [
                             'key' => 'negotiable',
                             'label' => 'Price Negotiable',
                             'type' => 'toggle',
                             'rules' => ['boolean'],
+                                ],
+                            ],
                         ],
                     ],
                 ],
@@ -228,105 +243,51 @@ return [
                 [
                     'key' => 'details',
                     'title' => 'Property Details',
-                    'fields' => [
+                    'sections' => [
                         [
-                            'key' => 'bedrooms',
-                            'label' => 'Bedrooms',
-                            'type' => 'number',
-                            'rules' => ['min:0'],
-                        ],
-                        [
-                            'key' => 'bathrooms',
-                            'label' => 'Bathrooms',
-                            'type' => 'number',
-                            'rules' => ['min:0'],
-                        ],
-                        [
-                            'key' => 'floor',
-                            'label' => 'Floor',
-                            'type' => 'number',
-                            'rules' => ['min:0'],
-                        ],
-                        [
-                            'key' => 'total_floors',
-                            'label' => 'Total Floors',
-                            'type' => 'number',
-                            'rules' => ['min:0'],
-                        ],
-                        [
-                            'key' => 'usable_area_sqm',
-                            'label' => 'Usable Area (sqm)',
-                            'type' => 'number',
-                            'rules' => ['required', 'min:0'],
-                        ],
-                        [
-                            'key' => 'land_size_rai',
-                            'label' => 'Land Size (Rai)',
-                            'type' => 'number',
-                            'rules' => ['min:0'],
-                        ],
-                        [
-                            'key' => 'land_size_ngan',
-                            'label' => 'Land Size (Ngan)',
-                            'type' => 'number',
-                            'rules' => ['min:0'],
-                        ],
-                        [
-                            'key' => 'land_size_wah',
-                            'label' => 'Land Size (Wah)',
-                            'type' => 'number',
-                            'rules' => ['min:0'],
-                        ],
-                        [
-                            'key' => 'furnishing',
-                            'label' => 'Furnishing',
-                            'type' => 'select',
-                            'options' => [
-                                ['value' => 'none', 'label' => 'None'],
-                                ['value' => 'partial', 'label' => 'Partially Furnished'],
-                                ['value' => 'full', 'label' => 'Fully Furnished'],
+                            'title' => 'Layout',
+                            'fields' => [
+                                ['key' => 'bedrooms', 'label' => 'Bedrooms', 'type' => 'number', 'rules' => ['min:0']],
+                                ['key' => 'bathrooms', 'label' => 'Bathrooms', 'type' => 'number', 'rules' => ['min:0']],
+                                ['key' => 'floor', 'label' => 'Floor', 'type' => 'number', 'rules' => ['min:0']],
+                                ['key' => 'total_floors', 'label' => 'Total Floors', 'type' => 'number', 'rules' => ['min:0']],
+                                ['key' => 'year_built', 'label' => 'Year Built', 'type' => 'number', 'rules' => ['nullable', 'integer', 'min:1800', 'max:2100']],
                             ],
-                            'rules' => ['in:none,partial,full'],
                         ],
                         [
-                            'key' => 'ownership',
-                            'label' => 'Ownership',
-                            'type' => 'select',
-                            'options' => [
-                                ['value' => 'freehold', 'label' => 'Freehold'],
-                                ['value' => 'leasehold', 'label' => 'Leasehold'],
+                            'title' => 'Size',
+                            'fields' => [
+                                ['key' => 'usable_area_sqm', 'label' => 'Usable Area (sqm)', 'type' => 'number', 'rules' => ['required', 'min:0']],
+                                ['key' => 'land_size_rai', 'label' => 'Land Size (Rai)', 'type' => 'number', 'rules' => ['min:0']],
+                                ['key' => 'land_size_ngan', 'label' => 'Land Size (Ngan)', 'type' => 'number', 'rules' => ['min:0']],
+                                ['key' => 'land_size_wah', 'label' => 'Land Size (Wah)', 'type' => 'number', 'rules' => ['min:0']],
                             ],
-                            'rules' => ['in:freehold,leasehold'],
                         ],
                         [
-                            'key' => 'title_deed',
-                            'label' => 'Title Deed',
-                            'type' => 'select',
-                            'options' => [
-                                ['value' => 'chanote', 'label' => 'Chanote'],
-                                ['value' => 'nor_sor_3_gor', 'label' => 'Nor Sor 3 Gor'],
-                                ['value' => 'nor_sor_3', 'label' => 'Nor Sor 3'],
-                                ['value' => 'por_bor_tor_5', 'label' => 'Por Bor Tor 5'],
+                            'title' => 'Legal & Attributes',
+                            'fields' => [
+                                ['key' => 'furnishing', 'label' => 'Furnishing', 'type' => 'select', 'options' => [
+                                    ['value' => 'none', 'label' => 'None'],
+                                    ['value' => 'partial', 'label' => 'Partially Furnished'],
+                                    ['value' => 'full', 'label' => 'Fully Furnished'],
+                                ], 'rules' => ['in:none,partial,full']],
+                                ['key' => 'ownership', 'label' => 'Ownership', 'type' => 'select', 'options' => [
+                                    ['value' => 'freehold', 'label' => 'Freehold'],
+                                    ['value' => 'leasehold', 'label' => 'Leasehold'],
+                                ], 'rules' => ['in:freehold,leasehold']],
+                                ['key' => 'title_deed', 'label' => 'Title Deed', 'type' => 'select', 'options' => [
+                                    ['value' => 'chanote', 'label' => 'Chanote'],
+                                    ['value' => 'nor_sor_3_gor', 'label' => 'Nor Sor 3 Gor'],
+                                    ['value' => 'nor_sor_3', 'label' => 'Nor Sor 3'],
+                                    ['value' => 'por_bor_tor_5', 'label' => 'Por Bor Tor 5'],
+                                ], 'rules' => ['in:chanote,nor_sor_3_gor,nor_sor_3,por_bor_tor_5']],
+                                ['key' => 'facing', 'label' => 'Facing', 'type' => 'select', 'options' => [
+                                    ['value' => 'north', 'label' => 'North'],
+                                    ['value' => 'south', 'label' => 'South'],
+                                    ['value' => 'east', 'label' => 'East'],
+                                    ['value' => 'west', 'label' => 'West'],
+                                ], 'rules' => ['in:north,south,east,west']],
                             ],
-                            'rules' => ['in:chanote,nor_sor_3_gor,nor_sor_3,por_bor_tor_5'],
-                        ],
-                        [
-                            'key' => 'year_built',
-                            'label' => 'Year Built',
-                            'type' => 'number',
-                            'rules' => ['nullable', 'integer', 'min:1800', 'max:2100'],
-                        ],
-                        [
-                            'key' => 'facing',
-                            'label' => 'Facing',
-                            'type' => 'select',
-                            'options' => [
-                                ['value' => 'north', 'label' => 'North'],
-                                ['value' => 'south', 'label' => 'South'],
-                                ['value' => 'east', 'label' => 'East'],
-                                ['value' => 'west', 'label' => 'West'],
-                            ],
-                            'rules' => ['in:north,south,east,west'],
                         ],
                     ],
                 ],
