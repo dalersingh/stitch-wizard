@@ -1,0 +1,37 @@
+# Git attributes for Stitch Wizard
+# Exclude development files from archives
+
+# Development directories
+/tests export-ignore
+/.github export-ignore
+/resources/js export-ignore
+
+# Development configuration files
+/.gitignore export-ignore
+/.gitattributes export-ignore
+/docker-compose.yml export-ignore
+/Dockerfile export-ignore
+/Makefile export-ignore
+/phpstan.neon.dist export-ignore
+/pint.json export-ignore
+/phpunit.xml.dist export-ignore
+
+# Set default behavior for text files
+* text=auto eol=lf
+
+# Explicitly declare text files to be normalized
+*.php text
+*.md text
+*.json text
+*.xml text
+*.yml text
+*.yaml text
+*.js text
+*.css text
+*.blade.php text
+
+# Declare binary files to prevent normalization
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary

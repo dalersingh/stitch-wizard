@@ -1,0 +1,49 @@
+{
+    "name": "stitch-wizard/stitch-wizard",
+    "description": "JSON-driven multi-step form wizard for Laravel (server-rendered + Alpine.js)",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.2",
+        "illuminate/support": "^11.0|^12.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0|^10.0",
+        "pestphp/pest": "^2.34",
+        "phpunit/phpunit": "^10.5",
+        "phpstan/phpstan": "^1.11",
+        "nunomaduro/larastan": "^2.9",
+        "laravel/pint": "^1.15"
+    },
+    "autoload": {
+        "psr-4": {
+            "StitchWizard\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "StitchWizard\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "StitchWizard\\StitchWizardServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "phpunit": "vendor/bin/phpunit",
+        "stan": "vendor/bin/phpstan analyse --memory-limit=1G",
+        "lint": "vendor/bin/pint --test",
+        "format": "vendor/bin/pint"
+    },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

@@ -1,0 +1,66 @@
+# Composer dependencies
+/vendor/
+composer.lock
+
+# Node dependencies
+/node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+package.json
+
+# PHPUnit
+/.phpunit.cache/
+/.phpunit.result.cache
+/coverage/
+
+# PHPStan
+/.phpstan/
+/.phpstan.cache
+
+# IDE and editor files
+/.idea/
+/.vscode/
+.DS_Store
+
+# Laravel
+/storage/
+
+# Docker
+/docker/
+/docker-data/
+/docker-compose*.yml
+.env.docker
+
+# Testing
+/e2e/
+/test-results/
+/tests/e2e/
+/tests/screenshots/
+/screenshots/
+playwright.config.js
+*playwright*.json
+*playwright*.js
+
+# Demo apps
+/demo-app/
+/demo/
+/examples/
+
+# Development scripts
+# Ignore all dev helpers except the bootstrap script
+/dev/
+!/dev/setup-e2e.js
+*.sh
+/scripts/
+capture-*.js
+create-*.js
+*-test*.js
+*-demo*.js
+
+# Temporary files
+/temp/
+/tmp/
+*.tmp
+*.temp
+*.log
