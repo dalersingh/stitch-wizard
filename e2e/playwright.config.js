@@ -31,10 +31,11 @@ module.exports = defineConfig({
     ['json', { outputFile: 'test-results/test-results.json' }],
   ],
   
-  // Shared settings for all projects
   use: {
     // Base URL to use in navigation
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:8000',
+    // In Docker the nginx service is reachable via container hostname `nginx`
+    // but we also allow overriding from the environment.
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://nginx',
     
     // Capture screenshot after each test
     screenshot: 'on',
@@ -97,14 +98,8 @@ module.exports = defineConfig({
     // },
   ],
   
-  // Local development web server
-  webServer: process.env.CI ? undefined : {
-    command: 'php artisan serve',
-    url: 'http://localhost:8000',
-    reuseExistingServer: true,
-    timeout: 120000,
-  },
-  
-  // Output directory for test artifacts
+  // In Docker we rely on the nginx container so we don't start a dev server here.
+
+  // Output directory for test artifacts – mapped as a volume in docker-compose
   outputDir: 'test-results/artifacts',
 });
