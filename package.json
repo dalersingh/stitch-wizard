@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/dalersingh/stitch-wizard#readme",
   "dependencies": {
-    "playwright": "^1.54.2"
+    "playwright": "^1.54.2",
+    "express": "^4.19.2"
   }
 }
