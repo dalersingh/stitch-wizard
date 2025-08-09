@@ -5,8 +5,11 @@ services:
   php:
     image: php:8.3-cli-bookworm
     volumes:
-      - ../..:/app
-    working_dir: /app
+      # Mount package source so it can be installed via Composer path repo
+      - ../..:/package
+      # Persistent demo Laravel application
+      - ./demo-app:/var/www/html
+    working_dir: /var/www/html
     environment:
       APP_ENV: testing
       DB_CONNECTION: sqlite
@@ -18,10 +21,23 @@ services:
       - "8000:8000"
     command: >
       bash -c "
+        set -e
+        # Install system & PHP extensions
         apt-get update && apt-get install -y git unzip zip libzip-dev libicu-dev libsqlite3-dev &&
         docker-php-ext-install pdo pdo_sqlite zip intl &&
+        # Install Composer
         curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer &&
-        composer install --no-interaction --prefer-dist &&
+        # If the demo app does not yet exist, create and configure it
+        if [ ! -f artisan ]; then
+          echo 'Creating demo Laravel application…' &&
+          composer create-project --quiet laravel/laravel . &&
+          # Configure local path repository for Stitch Wizard
+          composer config --absolute --working-dir=. repositories.stitch-wizard path /package &&
+          composer require --no-interaction dalersingh/stitch-wizard:@dev &&
+          # Publish & migrate
+          php artisan vendor:publish --provider=\"Dalersingh\\StitchWizard\\StitchWizardServiceProvider\" --force &&
+          php artisan migrate --force
+        fi &&
         php artisan serve --host=0.0.0.0 --port=8000"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000"]

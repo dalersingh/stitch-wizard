@@ -8,5 +8,26 @@
     "e2e": "playwright test",
     "e2e:headed": "playwright test --headed",
     "e2e:report": "playwright show-report e2e/playwright-report"
+  },
+  "version": "1.0.0",
+  "description": "Stitch Wizard is a Laravel package for **JSON-driven, multi-step forms** with server-side rendering and progressive enhancement via Alpine.js.   The **Real Estate wizard** serves as the canonical showcase of the API, UI/UX and E2E flow, while a lightweight **demo wizard** is retained solely for regression tests.",
+  "main": "capture-screenshots.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dalersingh/stitch-wizard.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dalersingh/stitch-wizard/issues"
+  },
+  "homepage": "https://github.com/dalersingh/stitch-wizard#readme",
+  "dependencies": {
+    "playwright": "^1.54.2"
   }
 }

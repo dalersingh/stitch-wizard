@@ -6,8 +6,8 @@ const { defineConfig, devices } = require('@playwright/test');
  * @see https://playwright.dev/docs/test-configuration
  */
 module.exports = defineConfig({
-  // Directory where tests are located
-  testDir: './e2e/tests',
+  // Directory where tests are located (relative to this config file)
+  testDir: './tests',
   
   // Pattern for test files
   testMatch: '**/*.spec.ts',
@@ -33,9 +33,8 @@ module.exports = defineConfig({
   
   use: {
     // Base URL to use in navigation
-    // In Docker the nginx service is reachable via container hostname `nginx`
-    // but we also allow overriding from the environment.
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://nginx',
+    // Default to local Laravel dev server, but still allow env override (e.g. Docker)
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:8000',
     
     // Capture screenshot after each test
     screenshot: 'on',
@@ -98,7 +97,16 @@ module.exports = defineConfig({
     // },
   ],
   
-  // In Docker we rely on the nginx container so we don't start a dev server here.
+  // Local development web server – spins up Laravel when running tests locally.
+  // In CI or Docker you can set PLAYWRIGHT_SKIP_WEB_SERVER=1 to bypass this.
+  webServer: process.env.PLAYWRIGHT_SKIP_WEB_SERVER
+    ? undefined
+    : {
+        command: 'php artisan serve --host=127.0.0.1 --port=8000',
+        url: 'http://localhost:8000',
+        reuseExistingServer: true,
+        timeout: 120_000,
+      },
 
   // Output directory for test artifacts – mapped as a volume in docker-compose
   outputDir: 'test-results/artifacts',

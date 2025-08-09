@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#f8fafc"/>
+  
+  <!-- Header -->
+  <rect x="0" y="0" width="100%" height="60" fill="#1e40af"/>
+  <text x="30" y="38" font-family="Arial" font-size="22" fill="white">Stitch Wizard</text>
+  
+  <!-- Main Container -->
+  <rect x="100" y="100" width="1000" height="650" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+  
+  <!-- Wizard Header -->
+  <text x="150" y="160" font-family="Arial" font-size="28" font-weight="bold" fill="#1e293b">Basic Information</text>
+  
+  <!-- Progress Bar Container -->
+  <rect x="150" y="190" width="900" height="20" rx="10" fill="#e2e8f0"/>
+  <text x="150" y="230" font-family="Arial" font-size="14" fill="#64748b">Step 1 of 6</text>
+  <text x="1020" y="230" font-family="Arial" font-size="14" fill="#64748b" text-anchor="end">0%</text>
+  
+  <!-- Progress Bar (0% filled) -->
+  <rect x="150" y="190" width="0" height="20" rx="10" fill="#3b82f6"/>
+  
+  <!-- Form Fields -->
+  <g>
+    <!-- Listing Type -->
+    <text x="150" y="280" font-family="Arial" font-size="16" font-weight="bold" fill="#334155">Listing Type</text>
+    <rect x="150" y="295" width="120" height="40" rx="4" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="170" y="320" font-family="Arial" font-size="14" fill="#334155">Sell</text>
+    <circle cx="160" cy="315" r="8" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+    
+    <rect x="280" y="295" width="120" height="40" rx="4" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="300" y="320" font-family="Arial" font-size="14" fill="#334155">Rent</text>
+    <circle cx="290" cy="315" r="8" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+    
+    <!-- Property Type -->
+    <text x="150" y="370" font-family="Arial" font-size="16" font-weight="bold" fill="#334155">Property Type</text>
+    <rect x="150" y="385" width="300" height="40" rx="4" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="170" y="410" font-family="Arial" font-size="14" fill="#94a3b8">Select property type</text>
+    <path d="M430,405 l-10,-10 l20,0 z" fill="#94a3b8"/>
+    
+    <!-- Title -->
+    <text x="150" y="460" font-family="Arial" font-size="16" font-weight="bold" fill="#334155">Title</text>
+    <rect x="150" y="475" width="900" height="40" rx="4" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+    
+    <!-- Description -->
+    <text x="150" y="550" font-family="Arial" font-size="16" font-weight="bold" fill="#334155">Description</text>
+    <rect x="150" y="565" width="900" height="100" rx="4" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+    
+    <!-- Continue Button -->
+    <rect x="150" y="700" width="150" height="40" rx="4" fill="#3b82f6"/>
+    <text x="225" y="725" font-family="Arial" font-size="16" fill="white" text-anchor="middle">Continue</text>
+  </g>
+  
+  <!-- Browser Chrome -->
+  <rect x="0" y="0" width="100%" height="60" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+  <circle cx="30" cy="30" r="10" fill="#f87171"/>
+  <circle cx="60" cy="30" r="10" fill="#fbbf24"/>
+  <circle cx="90" cy="30" r="10" fill="#34d399"/>
+</svg>
