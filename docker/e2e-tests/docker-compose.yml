@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # PHP service for Laravel application
+  php:
+    image: php:8.3-cli-bookworm
+    volumes:
+      - ../..:/app
+    working_dir: /app
+    environment:
+      APP_ENV: testing
+      DB_CONNECTION: sqlite
+      DB_DATABASE: ":memory:"
+      CACHE_DRIVER: array
+      SESSION_DRIVER: array
+      QUEUE_CONNECTION: sync
+    ports:
+      - "8000:8000"
+    command: >
+      bash -c "
+        apt-get update && apt-get install -y git unzip zip libzip-dev libicu-dev libsqlite3-dev &&
+        docker-php-ext-install pdo pdo_sqlite zip intl &&
+        curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer &&
+        composer install --no-interaction --prefer-dist &&
+        php artisan serve --host=0.0.0.0 --port=8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    networks:
+      - e2e-network
+
+  # Playwright service for E2E tests
+  playwright:
+    build:
+      context: ../..
+      dockerfile: docker/e2e-tests/Dockerfile
+    volumes:
+      - ../..:/app
+      - ./test-results:/app/test-results
+    working_dir: /app
+    environment:
+      PLAYWRIGHT_BASE_URL: http://php:8000
+      CI: "true"
+      NODE_ENV: test
+    depends_on:
+      php:
+        condition: service_healthy
+    command: ["npx", "playwright", "test", "e2e/tests"]
+    networks:
+      - e2e-network
+
+networks:
+  e2e-network:
+    driver: bridge
