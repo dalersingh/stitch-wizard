@@ -41,18 +41,23 @@ class WizardController extends Controller
 
         $stepKey = $firstStep['key'];
         $currentState = $this->stateStore->get($id);
-        $visibleFields = $this->visibleFields($firstStep['fields'], $currentState);
+        $structure = $this->resolveStepStructure($firstStep, $currentState);
+        $stepIndex = 1;
+        $totalSteps = count($wizard['steps']);
+        $pct = $this->computePct($stepIndex, $totalSteps);
 
         return view('stitch-wizard::wizard.step', [
             'wizardId' => $id,
             'stepKey' => $stepKey,
             'prevStepKey' => null,
-            'stepIndex' => 1,
-            'totalSteps' => count($wizard['steps']),
+            'stepIndex' => $stepIndex,
+            'totalSteps' => $totalSteps,
             'wizard' => $wizard,
             'step' => $firstStep,
-            'fields' => $visibleFields,
+            'sections' => $structure['sections'],
+            'fields' => $structure['fields'],
             'values' => $currentState,
+            'pct' => $pct,
         ]);
     }
 
@@ -69,9 +74,9 @@ class WizardController extends Controller
         }
 
         $currentState = $this->stateStore->get($id);
-        $visibleFields = $this->visibleFields($step['fields'], $currentState);
-
-        $stepIndex = array_search($key, array_column($wizard['steps'], 'key'), true) + 1;
+        $structure = $this->resolveStepStructure($step, $currentState);
+        $stepIndex = $this->stepIndex($wizard, $key);
+        $pct = $this->computePct($stepIndex, count($wizard['steps']));
 
         return view('stitch-wizard::wizard.step', [
             'wizardId' => $id,
@@ -81,8 +86,10 @@ class WizardController extends Controller
             'totalSteps' => count($wizard['steps']),
             'wizard' => $wizard,
             'step' => $step,
-            'fields' => $visibleFields,
+            'sections' => $structure['sections'],
+            'fields' => $structure['fields'],
             'values' => $currentState,
+            'pct' => $pct,
         ]);
     }
 
@@ -102,11 +109,11 @@ class WizardController extends Controller
         $inputData = $request->all();
         $context = array_merge($currentState, $inputData);
 
-        $visibleFields = $this->visibleFields($step['fields'], $context);
-        $fieldKeys = array_column($visibleFields, 'key');
+        $structure = $this->resolveStepStructure($step, $context);
+        $fieldKeys = array_column($structure['fields'], 'key');
         $filteredInput = array_intersect_key($inputData, array_flip($fieldKeys));
 
-        $errors = $this->validator->validate($filteredInput, $visibleFields);
+        $errors = $this->validator->validate($filteredInput, $structure['fields']);
 
         if (! empty($errors)) {
             if ($request->expectsJson() || $request->ajax()) {
@@ -121,13 +128,18 @@ class WizardController extends Controller
                 'totalSteps' => count($wizard['steps']),
                 'wizard' => $wizard,
                 'step' => $step,
-                'fields' => $visibleFields,
+                'sections' => $structure['sections'],
+                'fields' => $structure['fields'],
                 'values' => $context,
                 'fieldErrors' => $errors,
+                'pct' => $this->computePct(
+                    $this->stepIndex($wizard, $key),
+                    count($wizard['steps'])
+                ),
             ]);
         }
 
-        foreach ($visibleFields as $field) {
+        foreach ($structure['fields'] as $field) {
             if (($field['type'] ?? null) === 'file') {
                 $fieldKey = $field['key'];
                 if (isset($filteredInput[$fieldKey]) && $filteredInput[$fieldKey] instanceof UploadedFile) {
@@ -145,7 +157,7 @@ class WizardController extends Controller
 
         if ($request->expectsJson() || $request->ajax()) {
             if ($nextStep) {
-                $nextVisible = $this->visibleFields($nextStep['fields'], $updatedState);
+                $nextStructure = $this->resolveStepStructure($nextStep, $updatedState);
 
                 return view('stitch-wizard::wizard.step', [
                     'wizardId' => $id,
@@ -155,8 +167,13 @@ class WizardController extends Controller
                     'totalSteps' => count($wizard['steps']),
                     'wizard' => $wizard,
                     'step' => $nextStep,
-                    'fields' => $nextVisible,
+                    'sections' => $nextStructure['sections'],
+                    'fields' => $nextStructure['fields'],
                     'values' => $updatedState,
+                    'pct' => $this->computePct(
+                        $this->stepIndex($wizard, $nextStepKey),
+                        count($wizard['steps'])
+                    ),
                 ])->render();
             }
 
@@ -164,7 +181,7 @@ class WizardController extends Controller
         }
 
         if ($nextStep) {
-            $nextVisible = $this->visibleFields($nextStep['fields'], $updatedState);
+            $nextStructure = $this->resolveStepStructure($nextStep, $updatedState);
 
             return view('stitch-wizard::wizard.step', [
                 'wizardId' => $id,
@@ -174,8 +191,13 @@ class WizardController extends Controller
                 'totalSteps' => count($wizard['steps']),
                 'wizard' => $wizard,
                 'step' => $nextStep,
-                'fields' => $nextVisible,
+                'sections' => $nextStructure['sections'],
+                'fields' => $nextStructure['fields'],
                 'values' => $updatedState,
+                'pct' => $this->computePct(
+                    $this->stepIndex($wizard, $nextStepKey),
+                    count($wizard['steps'])
+                ),
             ]);
         }
 
@@ -195,6 +217,56 @@ class WizardController extends Controller
         return view('stitch-wizard::wizard.success', [
             'wizardId' => $id,
         ]);
+    }
+
+    private function stepIndex(array $wizard, string $key): int
+    {
+        $idx = array_search($key, array_column($wizard['steps'], 'key'), true);
+
+        return $idx === false ? 0 : ($idx + 1);
+    }
+
+    private function computePct(int $stepIndex, int $totalSteps): int
+    {
+        if ($totalSteps <= 0) {
+            return 0;
+        }
+
+        return (int) floor((($stepIndex - 1) / $totalSteps) * 100);
+    }
+
+    private function resolveStepStructure(array $step, array $context): array
+    {
+        if (isset($step['sections']) && is_array($step['sections'])) {
+            $sections = [];
+            $flat = [];
+
+            foreach ($step['sections'] as $section) {
+                $fields = $this->visibleFields($section['fields'] ?? [], $context);
+                $fields = array_values($fields);
+
+                $sections[] = [
+                    'title'  => $section['title'] ?? null,
+                    'fields' => $fields,
+                ];
+
+                foreach ($fields as $field) {
+                    $flat[] = $field;
+                }
+            }
+
+            return [
+                'sections' => $sections,
+                'fields'   => $flat,
+            ];
+        }
+
+        $fields = $this->visibleFields($step['fields'] ?? [], $context);
+
+        return [
+            'sections' => null,
+            'fields'   => array_values($fields),
+        ];
     }
 
     private function loadWizard(string $id): ?array
